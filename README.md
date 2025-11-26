@@ -57,7 +57,43 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+
+## installed package
+### NestJS TypeORM Module:
+```bash 
+npm install @nestjs/typeorm
+```
+### Core TypeORM Library:
+```bash 
+npm install typeorm
+```
+
+### PostgreSQL Driver::
+```bash 
+npm install pg
+```
+
+## package for generating universally unique identifiers (UUIDs)
+```bash
+npm install uuid
+```
+
+## TypeScript type definitions for the uuid package
+```bash
+npm install @types/uuid
+```
+
+## uses decorators to define and enforce validation rules on classes
+```bash
+npm install  class-validator
+```
+## handles transforming plain objects to class instances (and vice versa).
+```bash
+npm install class-transformer
+```
+
 ## Deployment
+
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
 
