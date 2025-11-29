@@ -15,4 +15,8 @@ export class UsersService {
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
   }
+
+  async findAll(): Promise<User[]>{
+    return this.usersRepository.find({where: {isDeleted: false}});
+  }
 }
