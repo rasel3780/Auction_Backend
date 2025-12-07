@@ -92,6 +92,14 @@ npm install  class-validator
 npm install class-transformer
 ```
 
+# bcrypt for password hashing
+```bash
+npm install bcrypt
+```
+
+## schema and relation 
+[Schema Diagram](https://dbdiagram.io/d/auction_Db-692c879bd6676488baf82800)
+
 ## Deployment
 
 
