@@ -1,13 +1,14 @@
-export class ApiResponse<T> {
-  success: boolean;
+export interface ApiResponse<T> {
+  isError: boolean;
   message?: string;
+  code?: number;
   data?: T;
+}
 
-  static ok<T>(data: T, message?: string) {
-    return { success: true, data, message };
-  }
+export function ok<T>(data: T, code = 200): ApiResponse<T> {
+  return { isError: false, data, code };
+}
 
-  static fail<T>(message: string, data?: T) {
-    return { success: false, message, data };
-  }
+export function fail<T = null>(message: string, code: number): ApiResponse<T> {
+  return { isError: true, message, code } as ApiResponse<T>;
 }
