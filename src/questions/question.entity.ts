@@ -9,12 +9,10 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { BaseEntity } from '../common/entities/base.entity'
+import { BaseEntity } from '../common/entities/base.entity';
 import { UserEntity } from 'src/users/user.entity';
 import { ItemEntity } from 'src/items/item.entity';
 import { AnswerEntity } from 'src/answers/answer.entity';
-
-
 
 @Entity('questions')
 export class QuestionEntity extends BaseEntity {
