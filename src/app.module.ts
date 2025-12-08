@@ -3,14 +3,17 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { BaseController } from './common/base/base.controller';
+import { ItemsModule } from './items/items.module';
+import { BidsModule } from './bids/bids.module';
+import { QuestionsModule } from './questions/questions.module';
+import { AnswersModule } from './answers/answers.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5433,
+      port: 5432,
       username: 'rasel',
       password: '123456',
       database: 'auction_Db',
@@ -19,8 +22,12 @@ import { BaseController } from './common/base/base.controller';
       autoLoadEntities: true,
     }),
     UsersModule,
+    ItemsModule,
+    BidsModule,
+    QuestionsModule,
+    AnswersModule,
   ],
-  controllers: [AppController, BaseController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

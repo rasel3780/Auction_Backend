@@ -1,16 +1,7 @@
 import { QuestionEntity } from 'src/questions/question.entity';
 import { UserEntity } from 'src/users/user.entity';
 import { BaseEntity } from '../common/entities/base.entity';
-import {
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  JoinColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity('answers')
 export class AnswerEntity extends BaseEntity {
