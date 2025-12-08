@@ -9,16 +9,15 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { BaseEntity } from '../common/entities/base.entity';
-import { UserEntity } from 'src/users/user.entity';
-import { BidEntity } from '../bids/Bid.entity';
-import { QuestionEntity } from 'src/questions/question.entity';
+import { BidEntity } from '../bids/bid.entity';
+import { UserEntity } from '../users/user.entity';
+import { QuestionEntity } from '../questions/question.entity';
 
 export enum AuctionStatus {
   Upcoming = 'Upcoming',
   Active = 'Active',
   Ended = 'Ended',
 }
-
 
 @Entity('items')
 export class ItemEntity extends BaseEntity {
@@ -40,7 +39,11 @@ export class ItemEntity extends BaseEntity {
   @Column('timestamptz')
   endTime: Date;
 
-  @Column({ type: 'enum', enum: AuctionStatus, default: AuctionStatus.Upcoming })
+  @Column({
+    type: 'enum',
+    enum: AuctionStatus,
+    default: AuctionStatus.Upcoming,
+  })
   status: AuctionStatus;
 
   @Column({ type: 'uuid' })
@@ -57,7 +60,7 @@ export class ItemEntity extends BaseEntity {
   @JoinColumn({ name: 'sellerId' })
   seller: UserEntity;
 
-  @OneToMany(() => BidEntity, (bid) => BidEntity.item)
+  @OneToMany(() => BidEntity, (bid) => bid.item)
   bids: BidEntity[];
 
   @OneToMany(() => QuestionEntity, (q) => q.item)
