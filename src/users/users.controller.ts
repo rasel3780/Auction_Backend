@@ -2,86 +2,129 @@ import {
   Controller,
   Post,
   Body,
-  Get,
-  Delete,
-  Put,
-  Param,
   ConflictException,
-  ParseUUIDPipe,
+  Get,
+  Put,
+  Delete,
+  Param,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { ApiResponse } from '../common/helper/api-response.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { ApiResponse, ok, fail } from '../common/helper/api-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dtos/user-response.dto';
+import { UserEntity } from './user.entity';
+import * as bcrypt from 'bcrypt';
+import { PaginationQueryDto } from 'src/common/dtos/PaginationQuery.dto';
+import { ApiParam } from '@nestjs/swagger';
 
-@ApiTags('Users')
-@Controller('users')
+@Controller('api/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   async create(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<ApiResponse<Omit<UserResponseDto, 'password'>>> {
-    try {
-      const userEntity = await this.usersService.create(createUserDto);
-      const userDto = plainToInstance(UserResponseDto, userEntity);
-      return ApiResponse.ok(userDto, 'User created successfully');
-    } catch (error) {
-      if (error instanceof ConflictException) {
-        return ApiResponse.fail(error.message);
-      }
-      return ApiResponse.fail('Failed to create user');
+    @Body() dto: CreateUserDto,
+  ): Promise<ApiResponse<UserResponseDto>> {
+    const userExist = await this.usersService.findByEmail(dto.email);
+    if (userExist) {
+      return fail('User already exists', 409);
     }
+
+    dto.password = await bcrypt.hash(dto.password, 10);
+    const entity = plainToInstance(UserEntity, dto);
+    const result = await this.usersService.create(entity);
+
+    if (result.isError) {
+      return fail(result.message!, result.code);
+    }
+
+    const responseDto = plainToInstance(UserResponseDto, result.data, {
+      excludeExtraneousValues: true,
+    });
+    return ok(responseDto, 201);
   }
 
   @Get()
-  async findAll() {
-    const userEntities = await this.usersService.findAll();
-    const userDtos = plainToInstance(UserResponseDto, userEntities, {
+  async findAll(): Promise<ApiResponse<UserResponseDto[]>> {
+    const result = await this.usersService.getAll();
+    if (result.isError) {
+      return fail(result.message!, result.code);
+    }
+
+    const dataArray = Array.isArray(result.data) ? result.data : [];
+
+    const responseDtos = plainToInstance(UserResponseDto, dataArray, {
       excludeExtraneousValues: true,
     });
-    return ApiResponse.ok(userDtos);
+
+    return ok(responseDtos);
+  }
+
+  @Get('paged')
+  async getPaged(
+    @Query() query: PaginationQueryDto,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.usersService.getPaged(query);
+    if (result.items.isError) {
+      return fail(result.items.message!, result.items.code);
+    }
+
+    const responseDtos = plainToInstance(UserResponseDto, result.items.data, {
+      excludeExtraneousValues: true,
+    });
+
+    return ok(
+      {
+        items: responseDtos,
+        totalCount: result.totalCount,
+      },
+      200,
+    );
   }
 
   @Get(':id')
-  @ApiParam({ name: 'id', description: 'User ID (UUID or number)' })
-  async findOne(@Param('id') id: string): Promise<ApiResponse<UserResponseDto>> {
-    const user = await this.usersService.findOne(id);
-    const userDto = plainToInstance(UserResponseDto, user, {
+  @ApiParam({ name: 'id', type: String })
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<ApiResponse<UserResponseDto>> {
+    const result = await this.usersService.getById(id);
+    if (result.isError) {
+      return fail(result.message!, result.code);
+    }
+
+    const responseDto = plainToInstance(UserResponseDto, result.data, {
       excludeExtraneousValues: true,
     });
-    return ApiResponse.ok(userDto);
-  }
-
-  @Get()
-  async findByEmail(email: string) {
-    const userEntity = await this.usersService.findByEmail(email);
-    const userDto = plainToInstance(UserResponseDto, userEntity, {
-      excludeExtraneousValues: true,
-    });
-    return ApiResponse.ok(userDto);
-  }
-
-  @Delete(':id')
-  @ApiParam({ name: 'id', description: 'User ID' })
-  async softDelete(@Param('id') id: string): Promise<ApiResponse<null>> {
-    await this.usersService.softDelete(id);
-    return ApiResponse.ok(null, 'User deleted successfully');
+    return ok(responseDto);
   }
 
   @Put(':id')
-  @ApiParam({ name: 'id', description: 'User ID' })
-  async updateUser(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() updateUserDto: Partial<CreateUserDto>,
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateUserDto,
   ): Promise<ApiResponse<UserResponseDto>> {
-    const user = await this.usersService.updateUser(id, updateUserDto);
-    const userDto = plainToInstance(UserResponseDto, user, {
+    const entity = plainToInstance(UserEntity, dto);
+    const result = await this.usersService.update(id, entity);
+
+    if (result.isError) {
+      return fail(result.message!, result.code);
+    }
+
+    const responseDto = plainToInstance(UserResponseDto, result.data, {
       excludeExtraneousValues: true,
     });
-    return ApiResponse.ok(userDto, 'User updated successfully');
+    return ok(responseDto);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<ApiResponse<null>> {
+    const result = await this.usersService.softDelete(id);
+    if (result.isError) {
+      return fail(result.message!, result.code);
+    }
+    return ok(null, 200);
   }
 }
