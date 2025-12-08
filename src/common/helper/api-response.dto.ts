@@ -10,5 +10,5 @@ export function ok<T>(data: T, code = 200): ApiResponse<T> {
 }
 
 export function fail<T = null>(message: string, code: number): ApiResponse<T> {
-  return { isError: true, message, code } as ApiResponse<T>;
+  return { isError: true, message, code };
 }
