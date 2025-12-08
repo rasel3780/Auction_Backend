@@ -10,11 +10,11 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
 import { ApiResponse } from '../common/helper/api-response.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { UserResponseDto } from './dto/user-response.dto';
+import { UserResponseDto } from './dtos/user-response.dto';
 
 @ApiTags('Users')
 @Controller('users')

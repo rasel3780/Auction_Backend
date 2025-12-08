@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const bcrypt = require('bcrypt') as {
   hash: (data: string, saltOrRounds: number) => Promise<string>;
