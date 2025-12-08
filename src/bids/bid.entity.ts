@@ -9,8 +9,8 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { BaseEntity } from '../common/entities/base.entity';
-import { UserEntity } from 'src/users/user.entity' 
-import { ItemEntity } from 'src/items/item.entity';
+import { UserEntity } from '../users/user.entity';
+import { ItemEntity } from '../items/item.entity';
 
 @Entity('bids')
 export class BidEntity extends BaseEntity {
