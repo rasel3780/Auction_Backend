@@ -57,8 +57,54 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+# config 
+```
+npm install @nestjs/config
+```
 
-## installed package
+## Debugging
+
+**Quick Start:** Press `F5` to start debugging! 🐛
+
+For detailed debugging instructions, see:
+- 📝 [DEBUG-QUICKSTART.md](DEBUG-QUICKSTART.md) - Start debugging in 30 seconds
+- 📚 [docs/DEBUGGING-GUIDE.md](docs/DEBUGGING-GUIDE.md) - Comprehensive debugging guide
+
+### Available Debug Configurations
+
+| Configuration | Use Case |
+|--------------|----------|
+| **Debug NestJS (with Watch)** ⭐ | Best for development - auto-restarts on changes |
+| **Debug NestJS App** | Quick debugging without watch |
+| **Debug Jest Tests** | Debug all unit tests |
+| **Debug Current Jest Test** | Debug single test file |
+| **Debug E2E Tests** | Debug API endpoints |
+| **Attach to Process** | Attach to running app |
+
+```bash
+# Start debugging with watch mode
+$ npm run start:debug
+# Then attach debugger or press F5 in VSCode
+```
+
+## Architecture
+
+This project follows **interface-based architecture** with SOLID principles:
+
+- 📖 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Complete architecture overview
+- 📖 [docs/OVERRIDE-GUIDE.md](docs/OVERRIDE-GUIDE.md) - Method override patterns
+- 📖 [CHANGELOG.md](CHANGELOG.md) - Recent improvements and fixes
+
+### Key Features
+
+✅ **Interface-based design** - Loose coupling via `IBaseService<T>`
+✅ **Generic controllers** - `BaseController<TEntity, TDto, TCreateDto, TUpdateDto>`
+✅ **SOLID principles** - Especially Dependency Inversion
+✅ **Type-safe** - Full TypeScript support
+✅ **Testable** - Easy to mock with interfaces
+✅ **Extensible** - Add custom methods via interfaces
+
+## Installed Packages
 ### NestJS TypeORM Module:
 ```bash 
 npm install @nestjs/typeorm

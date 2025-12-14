@@ -13,7 +13,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Auction API')
-    .setDescription('NestJS replica of the .NET Core auction backend')
+    .setDescription('NestJS auction backend')
     .setVersion('1.0')
     .addBearerAuth({
       type: 'http',
