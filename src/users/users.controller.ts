@@ -18,7 +18,14 @@ import { UserResponseDto } from './dtos/user-response.dto';
 import { UserEntity } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { PaginationQueryDto } from 'src/common/dtos/PaginationQuery.dto';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiParam, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { BadRequestException } from '@nestjs/common';
+import { UseInterceptors } from '@nestjs/common';
+import { UploadedFile } from '@nestjs/common';
+import { UploadProfilePictureDto } from './dtos/upload-profile-picture.dto';
 
 @Controller('api/users')
 export class UsersController {
@@ -126,5 +133,38 @@ export class UsersController {
       return fail(result.message!, result.code);
     }
     return ok(null, 200);
+  }
+
+  @Post(':id/profile-picture')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: (req, file, cb) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          return cb(new Error('Only image files (JPEG, PNG, GIF) are allowed!'), false);
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiParam({ name: 'id', type: String, description: 'User ID' })
+  @ApiBody({ type: UploadProfilePictureDto })
+  async uploadProfilePicture(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ApiResponse<string>> {
+    try {
+      if (!file) {
+        return fail('No file uploaded', 400);
+      }
+      const url = await this.usersService.uploadProfilePicture(id, file);
+      return ok(url);
+    } catch (error) {
+      console.error('Profile picture upload error:', error);
+      if (error instanceof BadRequestException) {
+        return fail(error.message, 400);
+      }
+      return fail('Upload failed', 500);
+    }
   }
 }
