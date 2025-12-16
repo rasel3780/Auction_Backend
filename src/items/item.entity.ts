@@ -12,6 +12,7 @@ import { BaseEntity } from '../common/entities/base.entity';
 import { BidEntity } from '../bids/bid.entity';
 import { UserEntity } from '../users/user.entity';
 import { QuestionEntity } from '../questions/question.entity';
+import { MediaEntity } from 'src/media/media.entity';
 
 export enum AuctionStatus {
   Upcoming = 'Upcoming',
@@ -65,4 +66,7 @@ export class ItemEntity extends BaseEntity {
 
   @OneToMany(() => QuestionEntity, (q) => q.item)
   questions: QuestionEntity[];
+
+  @OneToMany(() => MediaEntity, (media) => media.item, { cascade: true })
+  media: MediaEntity[];
 }

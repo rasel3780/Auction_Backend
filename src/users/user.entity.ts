@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { AnswerEntity } from '../answers/answer.entity';
 import { BidEntity } from '../bids/bid.entity';
 import { BaseEntity } from '../common/entities/base.entity';
@@ -21,6 +21,9 @@ export class UserEntity extends BaseEntity {
 
   @Column({ type: 'varchar', nullable: true })
   phone: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  profilePic: string | null;
 
   @OneToMany(() => ItemEntity, (item) => item.owner)
   ownedItems: ItemEntity[];
