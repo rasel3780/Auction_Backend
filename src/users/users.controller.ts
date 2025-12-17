@@ -44,7 +44,7 @@ export class UsersController {
     const entity = plainToInstance(UserEntity, dto);
     const result = await this.usersService.create(entity);
 
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -57,7 +57,7 @@ export class UsersController {
   @Get()
   async findAll(): Promise<ApiResponse<UserResponseDto[]>> {
     const result = await this.usersService.getAll();
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -75,7 +75,7 @@ export class UsersController {
     @Query() query: PaginationQueryDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.usersService.getPaged(query);
-    if (result.items.isError) {
+    if (!result.items.isSuccess) {
       return fail(result.items.message!, result.items.code);
     }
 
@@ -98,7 +98,7 @@ export class UsersController {
     @Param('id') id: string,
   ): Promise<ApiResponse<UserResponseDto>> {
     const result = await this.usersService.getById(id);
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -116,7 +116,7 @@ export class UsersController {
     const entity = plainToInstance(UserEntity, dto);
     const result = await this.usersService.update(id, entity);
 
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -129,7 +129,7 @@ export class UsersController {
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<ApiResponse<null>> {
     const result = await this.usersService.softDelete(id);
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
     return ok(null, 200);

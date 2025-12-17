@@ -29,7 +29,7 @@ export class BidsController {
     const entity = plainToInstance(BidEntity, dto);
     const result = await this.bidsService.create(entity);
 
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -42,7 +42,7 @@ export class BidsController {
   @Get()
   async findAll(): Promise<ApiResponse<ResponseBidDto[]>> {
     const result = await this.bidsService.getAll();
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -57,7 +57,7 @@ export class BidsController {
     @Query() query: PaginationQueryDto,
   ): Promise<ApiResponse<{ items: ResponseBidDto[]; totalCount: number }>> {
     const result = await this.bidsService.getPaged(query);
-    if (result.items.isError) {
+    if (!result.items.isSuccess) {
       return fail(result.items.message!, result.items.code);
     }
 
@@ -72,7 +72,7 @@ export class BidsController {
   @ApiParam({ name: 'id', type: String })
   async findOne(@Param('id') id: string): Promise<ApiResponse<ResponseBidDto>> {
     const result = await this.bidsService.getById(id);
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -90,7 +90,7 @@ export class BidsController {
     const entity = plainToInstance(BidEntity, dto);
     const result = await this.bidsService.update(id, entity);
 
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -103,7 +103,7 @@ export class BidsController {
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<ApiResponse<null>> {
     const result = await this.bidsService.softDelete(id);
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
     return ok(null, 200);

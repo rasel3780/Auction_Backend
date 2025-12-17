@@ -1,7 +1,7 @@
 import { PaginationQueryDto } from '../dtos/PaginationQuery.dto';
 
 export interface ServiceResult<T> {
-  isError: boolean;
+  isSuccess: boolean;
   code: number;
   message?: string;
   data?: T;

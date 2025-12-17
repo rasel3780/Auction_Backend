@@ -47,12 +47,12 @@ export class ItemEntity extends BaseEntity {
   })
   status: AuctionStatus;
 
-  @Column({ type: 'uuid' })
-  ownerId: string;
+  @Column({ type: 'uuid', nullable: true })
+  ownerId: string | null;
 
-  @ManyToOne(() => UserEntity, (user) => user.ownedItems)
+  @ManyToOne(() => UserEntity, (user) => user.ownedItems, { nullable: true })
   @JoinColumn({ name: 'ownerId' })
-  owner: UserEntity;
+  owner: UserEntity | null;
 
   @Column({ type: 'uuid' })
   sellerId: string;

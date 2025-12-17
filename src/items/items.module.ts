@@ -3,9 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsController } from './items.controller';
 import { ItemsService } from './items.service';
 import { ItemEntity } from './item.entity';
+import { MediaModule } from 'src/media/media.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ItemEntity])],
+  imports: [
+    TypeOrmModule.forFeature([ItemEntity]),
+    MediaModule,
+  ],
   controllers: [ItemsController],
   providers: [ItemsService],
   exports: [ItemsService],

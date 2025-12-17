@@ -25,9 +25,9 @@ export abstract class BaseService<
         order: { createdAt: 'DESC' } as any,
       });
 
-      return { isError: false, data, code: 200 };
+      return { isSuccess: true, data, code: 200 };
     } catch (error) {
-      return { isError: true, code: 500, message: error.message };
+      return { isSuccess: false, code: 500, message: error.message };
     }
   }
 
@@ -38,11 +38,11 @@ export abstract class BaseService<
       });
 
       if (!data)
-        return { isError: true, code: 404, message: 'Entity not found' };
+        return { isSuccess: false, code: 404, message: 'Entity not found' };
 
-      return { isError: false, data, code: 200 };
+      return { isSuccess: true, data, code: 200 };
     } catch (error) {
-      return { isError: true, code: 500, message: error.message };
+      return { isSuccess: false, code: 500, message: error.message };
     }
   }
 
@@ -50,9 +50,9 @@ export abstract class BaseService<
     try {
       const created = this.repo.create(entity);
       const saved = await this.repo.save(created);
-      return { isError: false, data: saved, code: 201 };
+      return { isSuccess: true, data: saved, code: 201 };
     } catch (error) {
-      return { isError: true, code: 500, message: error.message };
+      return { isSuccess: false, code: 500, message: error.message };
     }
   }
 
@@ -63,14 +63,14 @@ export abstract class BaseService<
       });
 
       if (!existing)
-        return { isError: true, code: 404, message: 'Entity not found' };
+        return { isSuccess: false, code: 404, message: 'Entity not found' };
 
       Object.assign(existing, entity, { updatedAt: new Date() });
 
       const updated = await this.repo.save(existing);
-      return { isError: false, data: updated, code: 200 };
+      return { isSuccess: true, data: updated, code: 201 };
     } catch (error) {
-      return { isError: true, code: 500, message: error.message };
+      return { isSuccess: false, code: 500, message: error.message };
     }
   }
 
@@ -81,15 +81,15 @@ export abstract class BaseService<
       });
 
       if (!existing)
-        return { isError: true, code: 404, message: 'Entity not found' };
+        return { isSuccess: false, code: 404, message: 'Entity not found' };
 
       existing.isDeleted = true;
 
       await this.repo.save(existing);
 
-      return { isError: false, data: true, code: 200 };
+      return { isSuccess: true, data: true, code: 200 };
     } catch (error) {
-      return { isError: true, code: 500, message: error.message };
+      return { isSuccess: false, code: 500, message: error.message };
     }
   }
 
@@ -106,12 +106,12 @@ export abstract class BaseService<
       });
 
       return {
-        items: { isError: false, data, code: 200 },
+        items: { isSuccess: true, data, code: 200 },
         totalCount,
       };
     } catch (error) {
       return {
-        items: { isError: true, code: 500, message: error.message },
+        items: { isSuccess: false, code: 500, message: error.message },
         totalCount: 0,
       };
     }

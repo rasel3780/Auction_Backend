@@ -23,9 +23,4 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   phone?: string;
-
-  @ApiProperty({ example: 'https://example.com/profile.jpg', required: false })
-  @IsOptional()
-  @IsString()
-  profilePic?: string;
 }

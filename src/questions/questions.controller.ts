@@ -29,7 +29,7 @@ export class QuestionsController {
     const entity = plainToInstance(QuestionEntity, dto);
     const result = await this.questionService.create(entity);
 
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -42,7 +42,7 @@ export class QuestionsController {
   @Get()
   async findAll(): Promise<ApiResponse<ResponseQuesDto[]>> {
     const result = await this.questionService.getAll();
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -57,7 +57,7 @@ export class QuestionsController {
     @Query() query: PaginationQueryDto,
   ): Promise<ApiResponse<{ items: ResponseQuesDto[]; totalCount: number }>> {
     const result = await this.questionService.getPaged(query);
-    if (result.items.isError) {
+    if (!result.items.isSuccess) {
       return fail(result.items.message!, result.items.code);
     }
 
@@ -72,7 +72,7 @@ export class QuestionsController {
   @ApiParam({ name: 'id', type: String })
   async findOne(@Param('id') id: string): Promise<ApiResponse<ResponseQuesDto>> {
     const result = await this.questionService.getById(id);
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -90,7 +90,7 @@ export class QuestionsController {
     const entity = plainToInstance(QuestionEntity, dto);
     const result = await this.questionService.update(id, entity);
 
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
 
@@ -103,7 +103,7 @@ export class QuestionsController {
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<ApiResponse<null>> {
     const result = await this.questionService.softDelete(id);
-    if (result.isError) {
+    if (!result.isSuccess) {
       return fail(result.message!, result.code);
     }
     return ok(null, 200);
