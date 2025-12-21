@@ -1,3 +1,10 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreteQuesDto } from './create-question.dto';
-export class UpdateQuesDto extends PartialType(CreteQuesDto) { }
+import { IsString, IsOptional } from 'class-validator';
+export class UpdateQuesDto {
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    questionText: string
+}
