@@ -26,6 +26,7 @@ import { BadRequestException } from '@nestjs/common';
 import { UseInterceptors } from '@nestjs/common';
 import { UploadedFile } from '@nestjs/common';
 import { UploadProfilePictureDto } from './dtos/upload-profile-picture.dto';
+import { ResetPasswordDto } from './dtos/reset-password.dto';
 
 @Controller('api/users')
 export class UsersController {
@@ -52,6 +53,19 @@ export class UsersController {
       excludeExtraneousValues: true,
     });
     return ok(responseDto, 201);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() dto: ResetPasswordDto): Promise<ApiResponse<string>> {
+    const user = await this.usersService.findByEmail(dto.email);
+    if (!user) {
+      return fail('user not found', 404);
+    }
+    const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
+
+    await this.usersService.updatePassword(user.id, hashedPassword);
+
+    return ok("Password has been reset", 200);
   }
 
   @Get()
@@ -167,4 +181,6 @@ export class UsersController {
       return fail('Upload failed', 500);
     }
   }
+
+
 }

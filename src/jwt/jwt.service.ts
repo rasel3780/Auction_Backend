@@ -15,4 +15,14 @@ export class JwtService {
         };
         return this.jwt.signAsync(payload, { expiresIn: '15m' });
     }
+
+    verify(token: string): { sub: string; email: string; jti: string; iat: number; exp: number } {
+        try {
+            return this.jwt.verify(token);
+        }
+        catch (error) {
+            throw new Error('Invalid or expired token');
+        }
+    }
 }
+

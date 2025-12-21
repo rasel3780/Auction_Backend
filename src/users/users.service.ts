@@ -27,6 +27,10 @@ export class UsersService
     return this.repo.findOne({ where: { email, isDeleted: false } });
   }
 
+  async updatePassword(userId: string, hashedPassword: string): Promise<void> {
+    await this.repo.update(userId, { password: hashedPassword });
+  }
+
   async uploadProfilePicture(
     userId: string,
     file: Express.Multer.File,
