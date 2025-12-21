@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IsDate, IsEnum, IsNumber, IsOptional, IsString, Min, IsUUID } from 'class-validator';
 import { AuctionStatus } from '../item.entity';
 
 export class createItemDto {
@@ -45,4 +45,9 @@ export class createItemDto {
     @ApiProperty({ example: '1c259823-4911-41b1-a142-42dfbd20e8e4' })
     @IsString()
     sellerId: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsUUID()
+    categoryId?: string;
 }

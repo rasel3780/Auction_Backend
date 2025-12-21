@@ -8,6 +8,7 @@ import { QuestionsModule } from './questions/questions.module';
 import { AnswersModule } from './answers/answers.module';
 import { AuthModule } from './auth/auth.module';
 import { MediaModule } from './media/media.module';
+import { ItemCategoryModule } from './item-category/item-category.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { MediaModule } from './media/media.module';
     AnswersModule,
     AuthModule,
     MediaModule,
+    ItemCategoryModule,
   ],
 })
 export class AppModule { }

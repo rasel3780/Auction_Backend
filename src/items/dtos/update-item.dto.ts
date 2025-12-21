@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { createItemDto } from './create-item.dto';
-import { IsOptional, IsString, IsNumber, Min, IsDate } from 'class-validator';
+import { IsOptional, IsString, IsNumber, Min, IsDate, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
 import { AuctionStatus } from '../item.entity';
 
@@ -42,4 +42,9 @@ export class UpdateItemDto {
     @ApiProperty()
     @IsOptional()
     status?: AuctionStatus;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsUUID()
+    categoryId?: string;
 }

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { AuctionStatus } from '../item.entity'
+import { CategoryResponseDto } from 'src/item-category/dtos/response-category.dto';
 
 export class responseItemDto {
     @ApiProperty()
@@ -50,6 +51,14 @@ export class responseItemDto {
     @ApiProperty({ example: ['url1.jpg', 'url2.png'] })
     @Expose()
     imageUrls: string[];
+
+    @ApiProperty()
+    @Expose()
+    categoryId: string | null
+
+    @ApiProperty({ type: () => CategoryResponseDto, nullable: true })
+    @Expose()
+    category: CategoryResponseDto | null;
 
     @ApiProperty()
     @Expose()

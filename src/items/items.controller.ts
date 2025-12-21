@@ -25,6 +25,7 @@ import { ItemsService } from './items.service';
 import { ApiResponse, ok, fail } from '../common/helper/api-response.dto';
 import { ApiConsumes, ApiBody, ApiParam } from '@nestjs/swagger';
 import { UploadItemImagesDto } from './dtos/upload-item-images.dto';
+import { CategoryResponseDto } from 'src/item-category/dtos/response-category.dto';
 
 const storage = diskStorage({
   destination: './uploads/items',
@@ -43,8 +44,6 @@ export class ItemsController {
   async create(
     @Body() dto: createItemDto,
   ): Promise<ApiResponse<responseItemDto>> {
-
-
     const entity = plainToInstance(ItemEntity, dto);
     entity.ownerId = null;
     const result = await this.itemsService.create(entity);
@@ -53,9 +52,30 @@ export class ItemsController {
       return fail(result.message!, result.code);
     }
 
-    const responseDto = plainToInstance(responseItemDto, result.data, {
-      excludeExtraneousValues: true,
-    });
+    const item = result.data;
+    const category = item!.category
+      ? plainToInstance(CategoryResponseDto, item!.category, { excludeExtraneousValues: true })
+      : null;
+
+    const responseDto: responseItemDto = {
+      id: item!.id,
+      title: item!.title,
+      description: item!.description,
+      basePrice: item!.basePrice,
+      currentPrice: item!.currentPrice,
+      startTime: item!.startTime,
+      endTime: item!.endTime,
+      status: item!.status,
+      ownerId: item!.ownerId,
+      sellerId: item!.sellerId,
+      categoryId: item!.categoryId,
+      category,
+      primaryImage: null,
+      imageUrls: [],
+      createdAt: item!.createdAt,
+      updatedAt: item!.updatedAt
+    };
+
     return ok(responseDto, 201);
   }
 
@@ -71,6 +91,10 @@ export class ItemsController {
       const imageUrls = media.map(m => m.url);
       const primaryImage = imageUrls[0] || null;
 
+      const category = item.category
+        ? plainToInstance(CategoryResponseDto, item.category, { excludeExtraneousValues: true })
+        : null;
+
       return {
         id: item.id,
         title: item.title,
@@ -82,10 +106,12 @@ export class ItemsController {
         status: item.status,
         ownerId: item.ownerId,
         sellerId: item.sellerId,
+        categoryId: item.categoryId,
+        category,
         primaryImage,
         imageUrls,
         createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
+        updatedAt: item.updatedAt ?? item.createdAt,
       } as responseItemDto;
     });
     return ok(responseDtos);
@@ -99,10 +125,16 @@ export class ItemsController {
     if (!result.items.isSuccess) {
       return fail(result.items.message!, result.items.code);
     }
+
     const responseDtos = result.items.data!.map(item => {
       const media = item.media || [];
       const imageUrls = media.map(m => m.url);
       const primaryImage = imageUrls[0] || null;
+
+
+      const category = item.category
+        ? plainToInstance(CategoryResponseDto, item.category, { excludeExtraneousValues: true })
+        : null;
 
       return {
         id: item.id,
@@ -115,6 +147,8 @@ export class ItemsController {
         status: item.status,
         ownerId: item.ownerId,
         sellerId: item.sellerId,
+        categoryId: item.categoryId,
+        category,
         primaryImage,
         imageUrls,
         createdAt: item.createdAt,
@@ -137,10 +171,13 @@ export class ItemsController {
     }
 
     const item = result.data;
-
     const media = item?.media || [];
     const imageUrls = media.map(m => m.url);
     const primaryImage = imageUrls[0] || null;
+
+    const category = item?.category
+      ? plainToInstance(CategoryResponseDto, item.category, { excludeExtraneousValues: true })
+      : null;
 
     const responseDto: responseItemDto = {
       id: item!.id,
@@ -153,14 +190,17 @@ export class ItemsController {
       status: item!.status,
       ownerId: item!.ownerId,
       sellerId: item!.sellerId,
+      categoryId: item!.categoryId,
+      category,
       primaryImage,
       imageUrls,
       createdAt: item!.createdAt,
-      updatedAt: item?.updatedAt,
+      updatedAt: item?.updatedAt ?? item!.createdAt,
     };
 
     return ok(responseDto);
   }
+
 
   @Put(':id')
   @UseInterceptors(FileInterceptor('image', {
@@ -176,7 +216,6 @@ export class ItemsController {
     @Param('id') id: string,
     @Body() dto: UpdateItemDto,
   ): Promise<ApiResponse<responseItemDto>> {
-
     const entity = plainToInstance(ItemEntity, dto);
     const result = await this.itemsService.update(id, entity);
 
@@ -184,9 +223,35 @@ export class ItemsController {
       return fail(result.message!, result.code);
     }
 
-    const responseDto = plainToInstance(responseItemDto, result.data, {
-      excludeExtraneousValues: true,
-    });
+    // Map updated item with category
+    const item = result.data;
+    const media = item!.media || [];
+    const imageUrls = media.map(m => m.url);
+    const primaryImage = imageUrls[0] || null;
+
+    const category = item!.category
+      ? plainToInstance(CategoryResponseDto, item!.category, { excludeExtraneousValues: true })
+      : null;
+
+    const responseDto: responseItemDto = {
+      id: item!.id,
+      title: item!.title,
+      description: item!.description,
+      basePrice: item!.basePrice,
+      currentPrice: item!.currentPrice,
+      startTime: item!.startTime,
+      endTime: item!.endTime,
+      status: item!.status,
+      ownerId: item!.ownerId,
+      sellerId: item!.sellerId,
+      categoryId: item!.categoryId,
+      category,
+      primaryImage,
+      imageUrls,
+      createdAt: item!.createdAt,
+      updatedAt: item!.updatedAt,
+    };
+
     return ok(responseDto);
   }
 

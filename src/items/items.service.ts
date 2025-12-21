@@ -29,7 +29,7 @@ export class ItemsService
     try {
       const item = await this.repo.findOne({
         where: { id, isDeleted: false },
-        relations: ['media'],
+        relations: ['media', 'category'],
       });
 
       if (!item) {
@@ -62,7 +62,7 @@ export class ItemsService
     try {
       const items = await this.repo.find({
         where: { isDeleted: false },
-        relations: ['media'],
+        relations: ['media', 'category'],
         order: { createdAt: 'DESC' },
       });
 
@@ -89,7 +89,7 @@ export class ItemsService
 
       const [data, totalCount] = await this.repo.findAndCount({
         where: { isDeleted: false },
-        relations: ['media'],
+        relations: ['media', 'category'],
         skip,
         take: pageSize,
         order: { createdAt: 'DESC' },

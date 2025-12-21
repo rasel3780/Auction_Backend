@@ -13,6 +13,7 @@ import { BidEntity } from '../bids/bid.entity';
 import { UserEntity } from '../users/user.entity';
 import { QuestionEntity } from '../questions/question.entity';
 import { MediaEntity } from 'src/media/media.entity';
+import { ItemCategoryEntity } from 'src/item-category/ItemCategoryEntity';
 
 export enum AuctionStatus {
   Upcoming = 'Upcoming',
@@ -49,6 +50,13 @@ export class ItemEntity extends BaseEntity {
 
   @Column({ type: 'uuid', nullable: true })
   ownerId: string | null;
+
+  @Column({ type: 'uuid', nullable: true })
+  categoryId: string | null;
+
+  @ManyToOne(() => ItemCategoryEntity, { nullable: true })
+  @JoinColumn({ name: 'categoryId' })
+  category: ItemCategoryEntity | null;
 
   @ManyToOne(() => UserEntity, (user) => user.ownedItems, { nullable: true })
   @JoinColumn({ name: 'ownerId' })
