@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   Query,
+  Req,
 } from '@nestjs/common';
 import { ApiResponse, ok, fail } from 'src/common/helper/api-response.dto';
 import { plainToInstance } from 'class-transformer';
@@ -14,19 +15,24 @@ import { BidsService } from './bids.service';
 import { BidEntity } from './bid.entity';
 import { CreateBidDto } from './dtos/create-bid.dto';
 import { PaginationQueryDto } from 'src/common/dtos/PaginationQuery.dto';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { ResponseBidDto } from './dtos/response-bid.dto';
 import { UpdateBidDto } from './dtos/update-bid';
 
 @Controller('api/bids')
+@ApiBearerAuth()
 export class BidsController {
   constructor(private readonly bidsService: BidsService) { }
 
   @Post()
   async create(
     @Body() dto: CreateBidDto,
+    @Req() req: any
   ): Promise<ApiResponse<ResponseBidDto>> {
+
+    const userId = req.user.id;
     const entity = plainToInstance(BidEntity, dto);
+    entity.id = userId;
     const result = await this.bidsService.create(entity);
 
     if (!result.isSuccess) {

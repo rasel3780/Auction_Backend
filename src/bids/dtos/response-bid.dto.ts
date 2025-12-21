@@ -4,6 +4,10 @@ import { ApiProperty } from '@nestjs/swagger';
 export class ResponseBidDto {
     @ApiProperty()
     @Expose()
+    id: string;
+
+    @ApiProperty()
+    @Expose()
     amount: number;
 
     @ApiProperty()
@@ -13,4 +17,12 @@ export class ResponseBidDto {
     @ApiProperty()
     @Expose()
     userId: string;
+
+    @ApiProperty()
+    @Expose()
+    createdAt: Date;
+
+    @ApiProperty({ nullable: true })
+    @Expose()
+    updatedAt?: Date | null;
 }

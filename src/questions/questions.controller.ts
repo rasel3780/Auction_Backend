@@ -114,6 +114,7 @@ export class QuestionsController {
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<ApiResponse<null>> {
+
     const result = await this.questionService.softDelete(id);
     if (!result.isSuccess) {
       return fail(result.message!, result.code);
