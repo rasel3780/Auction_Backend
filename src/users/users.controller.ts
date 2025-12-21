@@ -127,8 +127,7 @@ export class UsersController {
     @Param('id') id: string,
     @Body() dto: UpdateUserDto,
   ): Promise<ApiResponse<UserResponseDto>> {
-    const entity = plainToInstance(UserEntity, dto);
-    const result = await this.usersService.update(id, entity);
+    const result = await this.usersService.update(id, dto);
 
     if (!result.isSuccess) {
       return fail(result.message!, result.code);

@@ -27,7 +27,7 @@ export interface IBaseService<
 
   create(entity: T): Promise<ServiceResult<T>>;
 
-  update(id: string, entity: T): Promise<ServiceResult<T>>;
+  update(id: string, partialEntity: Partial<T>): Promise<ServiceResult<T>>;
 
   softDelete(id: string): Promise<ServiceResult<boolean>>;
 

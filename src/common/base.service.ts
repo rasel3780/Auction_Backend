@@ -56,19 +56,21 @@ export abstract class BaseService<
     }
   }
 
-  async update(id: string, entity: T): Promise<ServiceResult<T>> {
+  async update(id: string, partialEntity: Partial<T>): Promise<ServiceResult<T>> {
     try {
       const existing = await this.repo.findOne({
         where: { id, isDeleted: false } as FindOptionsWhere<T>,
       });
 
-      if (!existing)
+      if (!existing) {
         return { isSuccess: false, code: 404, message: 'Entity not found' };
+      }
 
-      Object.assign(existing, entity, { updatedAt: new Date() });
+
+      Object.assign(existing, partialEntity, { updatedAt: new Date() });
 
       const updated = await this.repo.save(existing);
-      return { isSuccess: true, data: updated, code: 201 };
+      return { isSuccess: true, data: updated, code: 200 }; // ← 200, not 201
     } catch (error) {
       return { isSuccess: false, code: 500, message: error.message };
     }
