@@ -1,13 +1,13 @@
-import { Body, Controller, Query, Param } from '@nestjs/common';
-import { ItemCategoryService } from './item-category.service';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiParam } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
+import { PaginationQueryDto } from 'src/common/dtos/PaginationQuery.dto';
+import { ApiResponse, fail, ok } from '../common/helper/api-response.dto';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CategoryResponseDto } from './dtos/response-category.dto';
-import { ApiResponse, ok, fail } from '../common/helper/api-response.dto';
-import { plainToInstance } from 'class-transformer';
+import { UpdateCategoryDto } from './dtos/update-category.dto';
+import { ItemCategoryService } from './item-category.service';
 import { ItemCategoryEntity } from './ItemCategoryEntity';
-import { Post, Get, Put, Delete } from '@nestjs/common';
-import { ApiParam } from '@nestjs/swagger';
-import { PaginationQueryDto } from 'src/common/dtos/PaginationQuery.dto';
 
 
 
@@ -80,11 +80,10 @@ export class ItemCategoryController {
     @Put(':id')
     async update(
         @Param('id') id: string,
-        @Body() dto: CategoryResponseDto,
+        @Body() dto: UpdateCategoryDto,
     ): Promise<ApiResponse<CategoryResponseDto>> {
 
-        const entity = plainToInstance(ItemCategoryEntity, dto);
-        const result = await this.itemCategeoryService.update(id, entity);
+        const result = await this.itemCategeoryService.update(id, dto);
 
         if (!result.isSuccess) {
             return fail(result.message!, result.code);

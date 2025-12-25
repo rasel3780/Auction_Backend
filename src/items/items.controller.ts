@@ -217,7 +217,7 @@ export class ItemsController {
     @Body() dto: UpdateItemDto,
   ): Promise<ApiResponse<responseItemDto>> {
     const entity = plainToInstance(ItemEntity, dto);
-    const result = await this.itemsService.update(id, entity);
+    const result = await this.itemsService.update(id, dto);
 
     if (!result.isSuccess) {
       return fail(result.message!, result.code);
