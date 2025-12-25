@@ -1,26 +1,29 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Put,
-  Delete,
-  Param,
-  Body,
   Query,
   Req,
+  UseGuards
 } from '@nestjs/common';
-import { ApiResponse, ok, fail } from 'src/common/helper/api-response.dto';
-import { plainToInstance } from 'class-transformer';
-import { BidsService } from './bids.service';
-import { BidEntity } from './bid.entity';
-import { CreateBidDto } from './dtos/create-bid.dto';
-import { PaginationQueryDto } from 'src/common/dtos/PaginationQuery.dto';
 import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
+import { PaginationQueryDto } from 'src/common/dtos/PaginationQuery.dto';
+import { ApiResponse, fail, ok } from 'src/common/helper/api-response.dto';
+import { BidEntity } from './bid.entity';
+import { BidsService } from './bids.service';
+import { CreateBidDto } from './dtos/create-bid.dto';
 import { ResponseBidDto } from './dtos/response-bid.dto';
 import { UpdateBidDto } from './dtos/update-bid';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('api/bids')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class BidsController {
   constructor(private readonly bidsService: BidsService) { }
 
@@ -30,9 +33,13 @@ export class BidsController {
     @Req() req: any
   ): Promise<ApiResponse<ResponseBidDto>> {
 
-    const userId = req.user.id;
-    const entity = plainToInstance(BidEntity, dto);
-    entity.id = userId;
+    const userId = req.user.sub;
+
+    const entity = plainToInstance(BidEntity, {
+      ...dto,
+      userId: userId,
+    });
+
     const result = await this.bidsService.create(entity);
 
     if (!result.isSuccess) {
@@ -93,8 +100,7 @@ export class BidsController {
     @Param('id') id: string,
     @Body() dto: UpdateBidDto,
   ): Promise<ApiResponse<ResponseBidDto>> {
-    const entity = plainToInstance(BidEntity, dto);
-    const result = await this.bidsService.update(id, entity);
+    const result = await this.bidsService.update(id, dto);
 
     if (!result.isSuccess) {
       return fail(result.message!, result.code);
