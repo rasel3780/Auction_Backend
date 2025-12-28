@@ -1,98 +1,146 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS Auction Platform
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is a backend application for a real-time auction platform built with NestJS, TypeORM, and PostgreSQL. It provides APIs for user management, creating and bidding on items, a question and answer system for items, and more.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- User Authentication (JWT)
+- Item Management (Create, View, Update)
+- Real-time Bidding
+- Question & Answer System for Items
+- Image Uploads for Items and User Profiles
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Project setup
+### Prerequisites
 
-```bash
-$ npm install
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+- [PostgreSQL](https://www.postgresql.org/)
+
+### Installation & Setup
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <https://github.com/rasel3780/Auction_Backend.git>
+    cd auction
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Setup Environment Variables:**
+    Create a `.env` file in the root of the project and add the following variables.
+
+    # Nodemailer (for sending emails)
+    GMAIL_USER=your_email@gmail.com
+    GMAIL_APP_PASS=your_gmail_app_password
+    ```
+
+4.  **Run the application:**
+    ```bash
+    # Start in development mode with auto-reloading
+    npm run start:dev
+    ```
+    The application will be running on `http://localhost:3000`.
+
+
+
+| Package                 | Purpose                                                                                                                                |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `@nestjs/common`        | Core NestJS framework module, providing fundamental decorators and classes.                                                            |
+| `@nestjs/core`          | Core functionality for creating and running a NestJS application.                                                                      |
+| `@nestjs/platform-express` | Express.js adapter for NestJS, allowing it to run on top of the Express framework.                                                     |
+| `@nestjs/typeorm`       | Integrates NestJS with TypeORM, a powerful Object-Relational Mapper (ORM) for TypeScript and JavaScript.                                 |
+| `pg`                    | PostgreSQL client for Node.js. The driver used by TypeORM to connect to the database.                                                  |
+| `@nestjs/jwt`           | Implements JSON Web Tokens (JWT) for authentication and authorization strategies.                                                      |
+| `@nestjs/config`        | Provides a module for managing application configuration using `.env` files and environment variables.                                   |
+| `@nestjs/schedule`      | A module for scheduling tasks and cron jobs, used here for managing auction statuses.                                                  |
+| `@nestjs-modules/mailer`| A module for sending emails, used for notifications.                                                                                   |
+| `class-validator`       | A decorator-based library for validating object properties, used extensively in DTOs.                                                  |
+| `class-transformer`     | A library for transforming plain objects to class instances and vice-versa, used with `class-validator`.                               |
+| `bcrypt`                | A library for hashing passwords to securely store them.                                                                                |
+| `multer`                | Middleware for handling `multipart/form-data`, used for file uploads.                                                                  |
+| `@nestjs/swagger`       | Generates OpenAPI (Swagger) documentation for your API, making it easy to visualize and interact with.                                   |
+
+
+## Database Schema (ER Diagram)
+
+The following diagram illustrates the relationships between the main entities in the database.
+
+```mermaid
+erDiagram
+    USER ||--o{ ITEM : "sells"
+    USER ||--o{ BID : "places"
+    USER ||--o{ QUESTION : "asks"
+    USER ||--o{ ANSWER : "provides"
+    USER ||--o{ MEDIA : "has profile picture"
+
+    ITEM_CATEGORY ||--|{ ITEM : "categorizes"
+    
+    ITEM ||--|{ BID : "receives"
+    ITEM ||--|{ QUESTION : "has"
+    ITEM ||--o{ MEDIA : "has images"
+    ITEM ||--|| USER : "owned by"
+    
+    QUESTION ||--o{ ANSWER : "is answered by"
+
+    USER {
+        string id PK
+        string fullName
+        string email
+        string password
+        string address
+        string phone
+        string profilePic
+    }
+
+    ITEM {
+        string id PK
+        string title
+        string description
+        float basePrice
+        float currentPrice
+        datetime startTime
+        datetime endTime
+        AuctionStatus status
+        string ownerId FK
+        string sellerId FK
+        string categoryId FK
+    }
+
+    BID {
+        string id PK
+        float amount
+        string userId FK
+        string itemId FK
+    }
+
+    QUESTION {
+        string id PK
+        string questionText
+        string userId FK
+        string itemId FK
+    }
+
+    ANSWER {
+        string id PK
+        string answerText
+        string userId FK
+        string questionId FK
+    }
+
+    MEDIA {
+        string id PK
+        string url
+        MediaType type
+        string userId FK
+        string itemId FK
+    }
+
+    ITEM_CATEGORY {
+        string id PK
+        string name
+    }
 ```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
