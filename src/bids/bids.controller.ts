@@ -120,4 +120,24 @@ export class BidsController {
     }
     return ok(null, 200);
   }
+
+  @Get('item/:itemId')
+  async getByItem(
+    @Param('itemId') itemId: string
+  ): Promise<ApiResponse<ResponseBidDto[]>> {
+    try {
+      const bids = await this.bidsService.findByItemId(itemId);
+
+      const dtos = plainToInstance(ResponseBidDto, bids, {
+        excludeExtraneousValues: true,
+      });
+
+      return ok(dtos);
+
+    } catch (error) {
+      console.error('Error fetching bids by item:', error);
+      return fail('Failed to fetch bids', 500);
+    }
+  }
+
 }

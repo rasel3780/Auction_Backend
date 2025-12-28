@@ -16,4 +16,12 @@ export class BidsService
     super(repo);
   }
 
+  async findByItemId(itemId: string): Promise<BidEntity[]> {
+    return this.repo.find({
+      where: { itemId, isDeleted: false },
+      relations: ['user'],
+      order: { amount: 'DESC', createdAt: 'DESC' }
+    });
+  }
+
 }

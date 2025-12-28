@@ -1,5 +1,21 @@
-import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Expose, Type } from 'class-transformer';
+import { UserEntity } from 'src/users/user.entity';
+
+class UserDto {
+    @ApiProperty()
+    @Expose()
+    id: string;
+
+    @ApiProperty()
+    @Expose()
+    fullName: string;
+
+    @ApiProperty()
+    @Expose()
+    email: string;
+}
+
 
 export class ResponseBidDto {
     @ApiProperty()
@@ -25,4 +41,9 @@ export class ResponseBidDto {
     @ApiProperty({ nullable: true })
     @Expose()
     updatedAt?: Date | null;
+
+    @ApiProperty({ type: () => UserDto })
+    @Expose()
+    @Type(() => UserDto)
+    user: UserDto;
 }
