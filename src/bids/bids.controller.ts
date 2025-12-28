@@ -32,13 +32,12 @@ export class BidsController {
     @Body() dto: CreateBidDto,
     @Req() req: any
   ): Promise<ApiResponse<ResponseBidDto>> {
-
     const userId = req.user.sub;
 
-    const entity = plainToInstance(BidEntity, {
-      ...dto,
-      userId: userId,
-    });
+    const entity = new BidEntity();
+    entity.amount = dto.amount;
+    entity.itemId = dto.itemId;
+    entity.userId = userId;
 
     const result = await this.bidsService.create(entity);
 
@@ -51,7 +50,6 @@ export class BidsController {
     });
     return ok(responseDto, 201);
   }
-
   @Get()
   async findAll(): Promise<ApiResponse<ResponseBidDto[]>> {
     const result = await this.bidsService.getAll();
